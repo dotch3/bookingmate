@@ -6,7 +6,6 @@ export interface Reservation {
     slot: 'morning' | 'afternoon' | 'evening';
     creatorId: string;
     creatorName: string;
-    status: 'active' | 'cancelled';
     notes?: string;
     createdAt: Date;
     updatedAt: Date;

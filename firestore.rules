@@ -2,72 +2,41 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isSignedIn() { return request.auth != null; }
-    function userRole(uid) { return get(/databases/$(database)/documents/users/$(uid)).data.role; }
-    function isAdmin() { return isSignedIn() && userRole(request.auth.uid) == "admin"; }
-    function isOwner(data) { return isSignedIn() && data.creatorId == request.auth.uid; }
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isOwner() {
+      return signedIn() && resource.data.creatorId == request.auth.uid;
+    }
     function validDate(d) { return d.matches('^\\d{4}-\\d{2}-\\d{2}$'); }
     function validSlot(s) { return s in ["morning","afternoon","evening"]; }
 
     match /users/{uid} {
-      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
-      allow create: if isSignedIn() && request.auth.uid == uid;
-      allow update: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow delete: if isAdmin();
     }
 
-    // Reservations
-    match /reservations/{id} {
-      allow read: if isSignedIn();
-
-      allow create: if isSignedIn()
+    match /reservations/{resId} {
+      allow read: if true;
+      allow create: if signedIn()
         && (request.resource.data.creatorId == request.auth.uid || isAdmin())
         && validDate(request.resource.data.date)
-        && validSlot(request.resource.data.slot)
-        && request.resource.data.status in ["active","cancelled"];
-
-      allow update: if isSignedIn()
-        && (isOwner(resource.data) || isAdmin())
-        && validDate(request.resource.data.date)
-        && validSlot(request.resource.data.slot)
-        && request.resource.data.creatorId == resource.data.creatorId;
-
-      allow delete: if isSignedIn() && (isOwner(resource.data) || isAdmin());
+        && validSlot(request.resource.data.slot);
+      allow update, delete: if signedIn() && (request.auth.uid == resource.data.userId || request.auth.uid == resource.data.creatorId || isAdmin());
     }
 
-    // Capacity docs: /slotCaps/{YYYY-MM-DD_slot}
-    // Require client to write this IN THE SAME TRANSACTION as the reservation.
+    // Contador de capacidade (se usar): escrito apenas por admin/Functions
     match /slotCaps/{date_slot} {
-      allow read: if isSignedIn();
-
-      // Only allow increments that keep count <= 2
-      allow create, update: if isSignedIn() && (
-        (isAdmin()) ||
-        // Non-admin path: only allow count to increase by +1 (or -1 on delete use case)
-        (
-          // new doc or existing
-          let before = resource.data;
-          let after = request.resource.data;
-
-          // basic shape checks
-          after.date.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
-          after.slot in ["morning","afternoon","evening"] &&
-
-          // enforce capacity
-          (
-            // create/increment: after.count == (before.count or 0) + 1 and <= 2
-            (!before.exists() && after.count == 1 && after.count <= 2) ||
-            (before.exists() && after.count == before.count + 1 && after.count <= 2) ||
-
-            // optional: allow decrement path if you implement deletes in a batch
-            (before.exists() && after.count == before.count - 1 && after.count >= 0)
-          )
-        )
-      );
+      allow read: if signedIn();
+      allow write: if isAdmin();
     }
 
-    // Optional immutable audit logs, if you add them
-    match /reservationHistory/{hId} {
+    // Histórico opcional (imutável)
+    match /reservationHistory/{id} {
       allow read: if isAdmin();
       allow create: if isAdmin();
       allow update, delete: if false;

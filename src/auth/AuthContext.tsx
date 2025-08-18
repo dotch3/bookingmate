@@ -2,14 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase/firebase';
 
 interface AuthContextType {
-  user: firebase.User | null;
+  user: import('firebase/auth').User | null;
   loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<import('firebase/auth').User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

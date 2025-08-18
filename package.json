@@ -10,14 +10,16 @@
 	},
 	"dependencies": {
 		"@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
+		"@tailwindcss/postcss": "^4.1.12",
 		"date-fns": "^4.1.0",
 		"firebase": "^9.0.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"react-router-dom": "^6.30.1"
+		"react-icons": "^5.5.0",
+		"react-router-dom": "^6.30.1",
+		"react-toastify": "^11.0.5"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.1.12",
 		"@types/react": "^18.3.23",
 		"@types/react-dom": "^18.3.7",
 		"@vitejs/plugin-react": "^4.7.0",

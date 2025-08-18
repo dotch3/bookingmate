@@ -1,14 +1,14 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-export const createReservation = functions.https.onCall(async (data, context) => {
+exports.createReservation = functions.https.onCall(async (data, context) => {
     const { date, slot, notes } = data;
 
-    // Verifica se o usuário está autenticado
+    // Check if user is authenticated
     if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'Usuário não autenticado.');
+        throw new functions.https.HttpsError('unauthenticated', 'User not authenticated.');
     }
 
     const uid = context.auth.uid;
@@ -20,52 +20,53 @@ export const createReservation = functions.https.onCall(async (data, context) =>
     return await admin.firestore().runTransaction(async (transaction) => {
         const slotCapDoc = await transaction.get(slotCapRef);
         if (!slotCapDoc.exists) {
-            throw new functions.https.HttpsError('not-found', 'Slot não encontrado.');
+            throw new functions.https.HttpsError('not-found', 'Slot not found.');
         }
 
         const count = slotCapDoc.data()?.count || 0;
         if (count >= 2) {
-            throw new functions.https.HttpsError('failed-precondition', 'Este slot está cheio.');
+            throw new functions.https.HttpsError('failed-precondition', 'This slot is full.');
         }
 
-        // Cria a nova reserva
+        // Create new reservation
         const newReservation = {
             date,
             slot,
             creatorId: uid,
-            creatorName: context.auth.token.name || 'Usuário',
-            status: 'active',
+            creatorName: context.auth.token.name || 'User',
             notes,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         };
 
-        const reservationDoc = await transaction.set(reservationRef.doc(), newReservation);
+        const newReservationRef = reservationRef.doc();
+        transaction.set(newReservationRef, newReservation);
 
-        // Atualiza a contagem de reservas no slot
+        // Update reservation count in slot
         transaction.update(slotCapRef, { count: count + 1, updatedAt: admin.firestore.FieldValue.serverTimestamp() });
 
-        return reservationDoc.id;
+        return newReservationRef.id;
     });
 });
 
-export const updateReservation = functions.https.onCall(async (data, context) => {
+exports.updateReservation = functions.https.onCall(async (data, context) => {
     const { reservationId, date, slot, notes } = data;
 
     if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'Usuário não autenticado.');
+        throw new functions.https.HttpsError('unauthenticated', 'User not authenticated.');
     }
 
     const reservationRef = admin.firestore().collection('reservations').doc(reservationId);
     const reservationDoc = await reservationRef.get();
 
     if (!reservationDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Reserva não encontrada.');
+        throw new functions.https.HttpsError('not-found', 'Reservation not found.');
     }
 
     const reservationData = reservationDoc.data();
-    if (reservationData?.creatorId !== context.auth.uid && context.auth.token.role !== 'admin') {
-        throw new functions.https.HttpsError('permission-denied', 'Você não tem permissão para modificar esta reserva.');
+    
+    if (reservationData.creatorId !== context.auth.uid && context.auth.token.role !== 'admin') {
+        throw new functions.https.HttpsError('permission-denied', 'You do not have permission to modify this reservation.');
     }
 
     return await admin.firestore().runTransaction(async (transaction) => {
@@ -74,17 +75,17 @@ export const updateReservation = functions.https.onCall(async (data, context) =>
         const slotCapDoc = await transaction.get(slotCapRef);
 
         if (!slotCapDoc.exists) {
-            throw new functions.https.HttpsError('not-found', 'Slot não encontrado.');
+            throw new functions.https.HttpsError('not-found', 'Slot not found.');
         }
 
         const count = slotCapDoc.data()?.count || 0;
 
-        // Verifica se o slot está cheio
+        // Check if slot is full
         if (count >= 2) {
-            throw new functions.https.HttpsError('failed-precondition', 'Este slot está cheio.');
+            throw new functions.https.HttpsError('failed-precondition', 'This slot is full.');
         }
 
-        // Atualiza a reserva
+        // Update reservation
         transaction.update(reservationRef, {
             date,
             slot,
@@ -92,40 +93,41 @@ export const updateReservation = functions.https.onCall(async (data, context) =>
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        // Atualiza a contagem de reservas no slot
+        // Update reservation count in slot
         transaction.update(slotCapRef, { count: count + 1, updatedAt: admin.firestore.FieldValue.serverTimestamp() });
 
         return reservationId;
     });
 });
 
-export const deleteReservation = functions.https.onCall(async (data, context) => {
+exports.deleteReservation = functions.https.onCall(async (data, context) => {
     const { reservationId } = data;
 
     if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'Usuário não autenticado.');
+        throw new functions.https.HttpsError('unauthenticated', 'User not authenticated.');
     }
 
     const reservationRef = admin.firestore().collection('reservations').doc(reservationId);
     const reservationDoc = await reservationRef.get();
 
     if (!reservationDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Reserva não encontrada.');
+        throw new functions.https.HttpsError('not-found', 'Reservation not found.');
     }
 
     const reservationData = reservationDoc.data();
-    if (reservationData?.creatorId !== context.auth.uid && context.auth.token.role !== 'admin') {
-        throw new functions.https.HttpsError('permission-denied', 'Você não tem permissão para deletar esta reserva.');
+    
+    if (reservationData.creatorId !== context.auth.uid && context.auth.token.role !== 'admin') {
+        throw new functions.https.HttpsError('permission-denied', 'You do not have permission to delete this reservation.');
     }
 
     const slotDocId = `${reservationData.date}_${reservationData.slot}`;
     const slotCapRef = admin.firestore().collection('slotCaps').doc(slotDocId);
 
     return await admin.firestore().runTransaction(async (transaction) => {
-        // Deleta a reserva
+        // Delete reservation
         transaction.delete(reservationRef);
 
-        // Atualiza a contagem de reservas no slot
+        // Update reservation count in slot
         const slotCapDoc = await transaction.get(slotCapRef);
         if (slotCapDoc.exists) {
             const count = slotCapDoc.data()?.count || 0;

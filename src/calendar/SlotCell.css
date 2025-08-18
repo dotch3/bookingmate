@@ -1,0 +1,147 @@
+.slot-cell {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.slot-cell:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #3b82f6;
+}
+
+.slot-cell.available {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.slot-cell.available:hover {
+  border-color: #059669;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+.slot-cell.reserved {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  cursor: not-allowed;
+}
+
+.slot-cell.reserved .reservation-info {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.slot-cell.reserved .reservation-info p {
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.slot-cell.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.loading-indicator {
+  color: #3b82f6;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.slot-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1f2937;
+  text-transform: capitalize;
+}
+
+.reservation-info {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-name {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.available-text {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.slot-cell.owned {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.slot-cell.owned:hover {
+  border-color: #2563eb;
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+}
+
+.slot-cell.owned .reservation-info {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.slot-cell.owned .reservation-info p {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.cancel-button {
+  margin-top: 8px;
+  color: #ef4444;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  color: #dc2626;
+}
+
+.reservation-item {
+  margin: 4px 0;
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.full-text {
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-top: 8px;
+}
+
+.slot-cell.full {
+  border-color: #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+}
+
+.slot-cell.full:hover {
+  border-color: #b91c1c;
+  background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);
+}

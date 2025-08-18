@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '../auth/AuthProvider';
 import { createReservation, updateReservation } from '../firebase/firebase';
 import { Reservation } from './types';
 
@@ -43,7 +43,7 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ reservation, onCl
             <label className="block text-sm font-medium">Slot</label>
             <select
               value={slot}
-              onChange={(e) => setSlot(e.target.value)}
+              onChange={(e) => setSlot(e.target.value as 'morning' | 'afternoon' | 'evening')}
               className="mt-1 block w-full border border-gray-300 rounded p-2"
               required
             >

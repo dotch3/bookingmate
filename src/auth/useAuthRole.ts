@@ -1,9 +1,11 @@
-import { useContext } from 'react';
-import { AuthContext } from './AuthContext';
+import { useAuth } from './AuthProvider';
 
-const useAuthRole = () => {
-    const { user } = useContext(AuthContext);
-    return user?.role || 'user'; // Retorna 'user' como padrão se não houver usuário autenticado
+export const useAuthRole = () => {
+  const { userRole } = useAuth();
+
+  return {
+    isAdmin: userRole === 'admin',
+    isUser: userRole === 'user',
+    role: userRole,
+  };
 };
-
-export default useAuthRole;

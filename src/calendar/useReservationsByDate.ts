@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { startOfMonth, endOfMonth, format } from 'date-fns';
 
 export interface Reservation {
   id: string;
@@ -8,10 +9,11 @@ export interface Reservation {
   slot: 'morning' | 'afternoon' | 'evening';
   creatorId: string;
   creatorName: string;
-  status: 'active' | 'cancelled';
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
+  userId: string;
+  userName: string;
 }
 
 export const useReservationsByDate = (date: Date) => {
@@ -20,26 +22,49 @@ export const useReservationsByDate = (date: Date) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Format date to YYYY-MM-DD for Firestore query
-    const formattedDate = date.toISOString().split('T')[0];
+    setLoading(true);
+    const startDate = format(startOfMonth(date), 'yyyy-MM-dd');
+    const endDate = format(endOfMonth(date), 'yyyy-MM-dd');
     
-    const q = query(
-      collection(db, 'reservations'),
-      where('date', '==', formattedDate)
+    const reservationsRef = collection(db, 'reservations');
+    const reservationsQuery = query(
+      reservationsRef,
+      where('date', '>=', startDate),
+      where('date', '<=', endDate)
     );
 
-    const unsubscribe = onSnapshot(q, 
+    const unsubscribe: Unsubscribe = onSnapshot(
+      reservationsQuery,
       (snapshot) => {
-        const reservationsData = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Reservation[];
-        
-        setReservations(reservationsData);
-        setLoading(false);
+        try {
+          const reservationsData: Reservation[] = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              date: data.date,
+              slot: data.slot,
+              creatorId: data.creatorId,
+              creatorName: data.creatorName,
+              notes: data.notes,
+              createdAt: data.createdAt instanceof Date ? data.createdAt : data.createdAt?.toDate?.() ?? new Date(),
+              updatedAt: data.updatedAt instanceof Date ? data.updatedAt : data.updatedAt?.toDate?.() ?? new Date(),
+              userId: data.userId,
+              userName: data.userName,
+            };
+          });
+
+          setReservations(reservationsData);
+          setError(null);
+        } catch (err) {
+          console.error('Error processing reservations:', err);
+          setError('Failed to process reservations');
+        } finally {
+          setLoading(false);
+        }
       },
       (err) => {
-        setError(err.message);
+        console.error('Error fetching reservations:', err);
+        setError('Failed to load reservations');
         setLoading(false);
       }
     );
