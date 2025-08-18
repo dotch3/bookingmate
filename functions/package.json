@@ -1,0 +1,20 @@
+{
+  "name": "calendar-spa-functions",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "firebase-admin": "^10.0.0",
+    "firebase-functions": "^3.14.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  },
+  "engines": {
+    "node": "14"
+  }
+}

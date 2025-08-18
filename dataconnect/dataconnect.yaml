@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "calendar-spa"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "calendar-spa-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

@@ -1,0 +1,1 @@
+// Este arquivo contém declarações de tipos para o ambiente Vite.
