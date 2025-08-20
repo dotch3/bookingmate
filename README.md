@@ -115,7 +115,7 @@ After setting up Firebase Auth, create an admin user and manually add the `admin
 
 ## 📋 Requirements Document
 
-For detailed functional and non-functional requirements, see [REQUIREMENTS.md](./REQUIREMENTS.md)
+For detailed functional and non-functional requirements, see [REQUIREMENTS.md](./docs/REQUIREMENTS.md)
 
 ---
 

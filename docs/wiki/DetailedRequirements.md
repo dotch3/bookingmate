@@ -1,4 +1,4 @@
-# BookingMate - Product Requirements Document
+# BookingMate - Detailed Requirements
 
 **Version**: 1.0  
 **Date**: January 2024  
