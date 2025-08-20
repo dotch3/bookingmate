@@ -1,10 +1,10 @@
 # BookingMate - Product Requirements Document
 
 **Version**: 1.0  
-**Date**: January 2024  
-**Product Owner**: [Product Owner Name]  
-**Development Team**: [Dev Team]  
-**QA Team**: [QA Team]  
+**Date**: August 2025  
+**Product Owner**: [Jorge P.O]  
+**Development Team**: [AI code asssitant, Jorge Dev Team]  
+**QA Team**: [Jorge QA Team]  
 
 ---
 
@@ -21,6 +21,8 @@ BookingMate is a web-based reservation system that allows teachers to:
 - Coordinate with other teachers
 
 ---
+
+## 🎯 Functional & Non-Functional Requirements
 
 ## 🎯 Functional Requirements
 
@@ -46,7 +48,7 @@ BookingMate is a web-based reservation system that allows teachers to:
 **Acceptance Criteria**:
 - Admin users can access admin panel
 - Regular users cannot access admin functions
-- Role is determined by `isAdmin` field in user profile
+- Role is determined by `admin` value in the role field in user profile
 
 ### FR-003: Calendar System
 **Priority**: High  
@@ -68,13 +70,13 @@ BookingMate is a web-based reservation system that allows teachers to:
 **Description**: Predefined time slots for reservations
 
 **Time Slots**:
-- **Morning**: 9:00 AM - 12:00 PM
+- **Morning**: 8:00 AM - 12:00 PM
 - **Afternoon**: 1:00 PM - 5:00 PM  
-- **Evening**: 6:00 PM - 9:00 PM
+- **Evening**: 6:00 PM - 10:00 PM
 
 **Acceptance Criteria**:
 - Each slot can accommodate maximum 2 reservations per day
-- Users can see current capacity (e.g., "1/2 booked")
+- Users can see current capacity (e.g., "2 reservations")
 - Slots become unavailable when fully booked
 - No overlapping reservations for same user
 
@@ -116,21 +118,19 @@ BookingMate is a web-based reservation system that allows teachers to:
 ## 🔧 Non-Functional Requirements
 
 ### NFR-001: Performance
-- Page load time < 3 seconds
+- Page load time < 2 seconds
 - Calendar navigation < 1 second
 - Real-time updates within 2 seconds
 
 ### NFR-002: Usability
-- Responsive design (mobile, tablet, desktop)
 - Intuitive navigation
 - Clear visual feedback for user actions
 - Accessible color scheme
 
 ### NFR-003: Security
-- Secure authentication via Firebase Auth
-- Data validation on client and server
-- Protected API endpoints
-- No sensitive data in client-side code
+- **Authentication**: Secure password hashing
+- **Authorization**: Role-based access controls
+- **Session Management**: Secure session handling
 
 ### NFR-004: Reliability
 - 99% uptime availability
@@ -145,7 +145,60 @@ BookingMate is a web-based reservation system that allows teachers to:
 
 ---
 
-## 🚫 Out of Scope (Phase 1)
+## 🛠️ Technical Requirements
+
+### Frontend Technology Stack
+- **Framework**: React 18+ with TypeScript
+- **Build Tool**: Vite for fast development and building
+- **Styling**: Tailwind CSS for responsive design
+- **Routing**: React Router DOM for navigation
+- **Icons**: React Icons for consistent iconography
+
+### Backend Technology Stack
+- **Platform**: Firebase (Backend-as-a-Service)
+- **Database**: Firestore (NoSQL document database)
+- **Authentication**: Firebase Authentication
+- **Hosting**: Firebase Hosting
+- **Functions**: Firebase Cloud Functions (if needed)
+
+### Development Requirements
+- **Version Control**: Git with feature branch workflow
+- **Code Quality**: ESLint and Prettier configuration
+- **Testing**: Comprehensive test coverage
+- **Documentation**: README and technical documentation
+
+## 📊 Business Rules
+
+### BR-001: Reservation Capacity
+- Maximum 2 reservations per time slot
+- No overbooking allowed
+- First-come, first-served basis
+
+### BR-002: User Permissions
+- Regular users can only manage their own reservations
+- Admin users have full system access
+- No anonymous access allowed
+
+### BR-003: Time Slot Management
+- Time slots are predefined (not user-created)
+- Reservations can be made for future dates only
+- Past reservations are read-only
+
+### BR-004: Data Validation
+- All user inputs must be validated
+- Email addresses must be unique
+- Reservation conflicts must be prevented
+
+## 🔗 Related Documentation
+
+**[📋 Detailed Requirements](wiki/DetailedRequirements.md)** - Complete detailed requirements including all specifications above
+
+**Testing Documentation**:
+- **[Test Strategy and Plan](wiki/TestStrategyAndPlan.md)** - Testing approach for these requirements
+- **[Test Cases](wiki/TestCases.md)** - Detailed test cases covering all requirements
+
+---
+## 🚫 Out of Scope (Beta)
 
 - Email notifications
 - Calendar integrations (Google Calendar, Outlook)
@@ -185,7 +238,7 @@ BookingMate is a web-based reservation system that allows teachers to:
 
 ## 📊 Success Criteria
 
-### Phase 1 Completion Criteria
+### Beta Completion Criteria
 - [ ] All functional requirements implemented
 - [ ] Authentication system working
 - [ ] Calendar interface functional
@@ -197,6 +250,7 @@ BookingMate is a web-based reservation system that allows teachers to:
 
 ### Quality Gates
 - [ ] All critical bugs resolved
+- [ ] Test case execution 100%
 - [ ] Performance requirements met
 - [ ] Security review passed
 - [ ] Cross-browser compatibility verified
@@ -206,11 +260,9 @@ BookingMate is a web-based reservation system that allows teachers to:
 
 ## 📞 Stakeholder Contacts
 
-**Product Owner**: [Name] - [email]  
-**Tech Lead**: [Name] - [email]  
-**QA Lead**: [Name] - [email]  
-**UI/UX Designer**: [Name] - [email]  
-
+**Product Owner**: [Jorge PO] - [jorge-po@bookmate.com]  
+**Tech Lead**: [Jorge Tech Lead] - [jorge-tl@bookmate.com]  
+**QA Lead**: [Jorge QA] - [jorge-qa@bookmate.com]  
 ---
 
 *This document serves as the single source of truth for BookingMate Phase 1 requirements. Any changes must be approved by the Product Owner and communicated to all stakeholders.*
