@@ -2,9 +2,9 @@
 
 **Version**: 1.0  
 **Date**: January 2024  
-**Product Owner**: [Product Owner Name]  
-**Development Team**: [Dev Team]  
-**QA Team**: [QA Team]  
+**Product Owner**: [Jorge P.O] 
+**Development Team**: [AI code asssitant, Jorge Dev Team] 
+**QA Team**: [Jorge QA Team]
 
 ---
 
