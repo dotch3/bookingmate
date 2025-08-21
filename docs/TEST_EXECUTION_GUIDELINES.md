@@ -44,56 +44,136 @@ This document provides detailed guidelines for executing test activities, includ
 **3.1 Exploratory Testing Sessions**
 Execute exploratory testing using these charters:
 
-**Charter 1: User Authentication Flow**
-- Mission: Explore user login, registration, and password reset functionality
-- Duration: 60 minutes
-- Focus Areas: Security, usability, error handling
+> **Legend:**  
+> (I) = Information  
+> (R) = Risk
 
-**Charter 2: Calendar Navigation and Interaction**
-- Mission: Explore calendar view, date navigation, and time slot selection
-- Duration: 90 minutes
-- Focus Areas: UI responsiveness, data accuracy, edge cases
+### Testing Charters
 
-**Charter 3: Reservation Management**
-- Mission: Explore reservation creation, modification, and cancellation
-- Duration: 90 minutes
-- Focus Areas: Business logic, validation, user feedback
+| Charter | Description |
+|---------|-------------|
+| **Charter 1: Create reservations (common user and admin)** | Explore the reservation creation flow as a common user applying the heuristic "Testing wisdom - One test is an experiment designed to reveal information." Cover available time slots (morning, afternoon, evening) and error handling when slots are unavailable. |
+| **Charter 2: Manage users (admin)** | Explore user creation, edition, and deletion as an admin using heuristics "CRUD" and "Strings." Try long names, special characters, blank fields, duplicate emails, and invalid inputs. Verify role assignment (user/admin) and confirm common users cannot access user management. |
+| **Charter 3: Cancel reservations (common user and admin)** | Explore cancelation of reservations applying the heuristic "Risk Testing – imagine a problem and then look for it." Include common user canceling their own reservations, and admin canceling both their own and other users' reservations. |
+| **Charter 4: View reservations (common user and admin)** | Explore the navigation and display of reservations applying the heuristic "Navigation." Verify that a common user only sees their own reservations (or a message if none exist), and that an admin can list and manage reservations for all users. |
+| **Charter 5: Manage reservations (admin)** | Explore editing and deleting reservations as an admin using heuristics "CRUD" and "Error Guessing." Verify successful updates, consistent deletion behavior, and correct feedback messages on the interface. |
+---
 
-**Charter 4: Admin Panel Functionality**
-- Mission: Explore admin features, user management, and system configuration
-- Duration: 60 minutes
-- Focus Areas: Authorization, data integrity, admin workflows
+### Session Report
 
-**Charter 5: Cross-browser and Responsive Testing**
-- Mission: Explore application behavior across different browsers and screen sizes
-- Duration: 60 minutes
-- Focus Areas: Compatibility, responsive design, performance
+| Start date and time | Tester | Module | Charter | Duration | Environment |
+|---------------------|--------|--------|---------|----------|-------------|
+| 21/08/2025 | Jorge Mercado | Reservations | Charter 1 | 12 minutes | Local environment |
+| 22/08/2025 | Jorge Mercado | Users | Charter 2 | 15 minutes | Local environment |
+| 23/08/2025 | Jorge Mercado | Reservations | Charter 3 | 10 minutes | Local environment |
+| 24/08/2025 | Jorge Mercado | Users | Charter 4 | 12 minutes | Local environment |
+| 25/08/2025 | Jorge Mercado | Reservations | Charter 5 | 15 minutes | Local environment |
 
-**3.2 Session Report Template**
-For each charter, document:
-- Charter details (mission, duration, tester)
-- Test environment and setup
-- Areas explored
-- Issues discovered
-- Questions raised
-- Recommendations
+---
 
-### Step 4: Defect Documentation
+#### Missions
+**Charter 1: Create reservations (common user and admin)**
 
-**4.1 Defect Report Template**
-For each defect found, create detailed report:
-- **Defect ID**: DEF-XXX
-- **Title**: Brief description
-- **Severity**: Critical/High/Medium/Low
-- **Priority**: High/Medium/Low
-- **Steps to Reproduce**: Detailed steps
-- **Expected Result**: What should happen
-- **Actual Result**: What actually happened
-- **Environment**: Browser, OS, application version
-- **Screenshots/Videos**: Visual evidence
-- **Workaround**: If available
+**Mission 1:**
+    Explore reservation creation flow for common users and admins  
+    With common user account with no existing reservations and admin account with various permission levels  
+    To find out, confirm, validate it is possible to create reservations on morning, afternoon, and evening slots  
 
-### Step 5: Documentation Management
+*Duration:* 12 minutes  
+
+**Notes**  
+- (I) I’ve logged into the BookingMate system, and it is possible to create the reservation as common and admin user.  
+- (I) The UI looks pretty and friendly in the login, Calendar and Slot views, very intuitive.  
+- (I) The color of the slot changes from green (empty), blue (1 reservation) and red (when full slot). This is expected.  
+- (I) Notice the defect `BUG001` which is already reported.  
+- (I) Tested with 1 and two reservations per slot in 1, 2 and 3 slots.  
+- (R) The responsiveness could be affected due to the components of the calendar.  
+- (R) The Calendar title text has no contrast; it is difficult to see and thus read.  
+
+
+**Defects**  
+1. The selection of a date from the date picker on Slot view selects a date -1 day erroneously for any user (common, admin) – `BUG005` reported  
+2. System throws an error message “Invalid time value” when selecting the “Clean” option from the date picker on the Slot view page – `BUG006` reported  
+
+**Questions**  
+- N/A
+
+---
+
+**Charter 2: Manage users (admin)**
+**Mission 2:**
+  Explore user creation, edition, and deletion functionality for admin users
+  With admin account with full permissions and test data including various user types
+  To find out, confirm, validate admin can successfully manage users with CRUD operations and string validation
+*Duration:* 15 minutes
+**Notes**  
+- (I) I’ve confirmed the “Delete” action has a confirmation modal before deleting the user, with the user's email shown in the message. The modal allows canceling or proceeding with the deletion.  
+- (I) The user is deleted from the database `/users` collection.  
+- (R) The user is deleted but their reservations are not deleted on cascade; they still remain in the `/reservations` collection.  
+- (I) Using techniques and heuristics for testing the inputs of the “Create User” form.  
+- (R) The email and displayName fields have no validations. They accept any size of characters and could be vulnerable to injection attacks.  
+- (R) Because of `BUG008`, the admin user has its role changed to “user”.  
+
+
+**Defects**  
+1. After deletion of a user, there is no toast message indicating if the deletion succeeded or failed – `BUG007` reported  
+2. Reservations are not deleted on cascade when the owner user is deleted – `BUG008` reported  
+3. No validation in the “email” and “displayName” input fields in "Create New User" and "Edit User" modals – `BUG009`  
+4. Logging in as admin causes the role to change to “user” and erases the `displayName` in the `/users` collection – `BUG010`  
+
+**Questions**  
+- N/A
+
+
+---
+
+--- 
+ @TODO:
+**Charter 3: Cancel reservations (common user and admin)**
+Mission 3:
+  Explore reservation cancellation functionality for both user types
+  With common user account with existing reservations and admin account with access to all reservations
+  To find out, confirm, validate cancellation works correctly for own and other users' reservations
+Duration: 10 minutes
+Notes: 
+
+Defects: 
+
+Questions: 
+
+
+---
+
+**Charter 4: View reservations (common user and admin)**
+Mission 4:
+  Explore reservation viewing and navigation functionality
+  With common user account with some reservations and admin account with system-wide access
+  To find out, confirm, validate proper display and navigation of reservations based on user role
+Duration: 8 minutes
+Notes: 
+
+Defects: 
+
+Questions: 
+
+---
+
+**Charter 5: Manage reservations (admin)**
+Mission 5:
+  Explore reservation editing and deletion functionality for admin users
+  With admin account with full permissions and existing reservations from multiple users
+  To find out, confirm, validate admin can successfully edit and delete any user's reservations
+Duration: 10 minutes
+Notes: 
+
+Defects: 
+
+Questions: 
+
+---
+
+
+### Step 4: Documentation Management
 
 **5.1 Word Documents Creation**
 - Create `Test_Execution_Results.docx`
@@ -202,36 +282,6 @@ Environment: [Browser/OS]
 | TC ID | Title | Status | Defect ID | Execution Time | Notes |
 |-------|-------|--------|-----------|----------------|-------|
 | TC01  |       |        |           |                |       |
-```
-
-### Exploratory Session Template
-```
-Exploratory Testing Session Report
-
-Charter: [Charter Name]
-Tester: [Name]
-Date: [Date]
-Duration: [Time]
-Environment: [Details]
-
-Mission:
-[Charter mission statement]
-
-Areas Explored:
-- [Area 1]
-- [Area 2]
-
-Issues Found:
-- [Issue 1]
-- [Issue 2]
-
-Questions Raised:
-- [Question 1]
-- [Question 2]
-
-Recommendations:
-- [Recommendation 1]
-- [Recommendation 2]
 ```
 
 ### Defect Report Template
