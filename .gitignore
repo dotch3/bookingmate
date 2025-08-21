@@ -73,3 +73,8 @@ node_modules/
 # macOS system files
 .DS_Store
 .DS_Store?
+**/.DS_Store
+
+# Build artifacts
+dist/
+functions/lib/
