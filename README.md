@@ -61,7 +61,7 @@ Phase 3 will focus on **test execution** using these artifacts as the foundation
 - ✅ Risk assessment and test coverage analysis
 - ✅ Non-functional testing strategy
 - ✅ Test data mapping and known defects documentation
-For detailed information, see [Phase 2 Documentation](docs/PHASE_2.md)
+- For detailed information, see [Phase 2 Documentation](docs/PHASE_2.md)
 
 ### Phase 3: Test Execution (`phase-3-test-execution`) ⏳
 **Objective**: Execute manual testing and document findings
