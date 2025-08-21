@@ -21,6 +21,12 @@ Comprehensive test execution framework has been established following ISO-29119-
   - Documentation management workflows
   - Automation planning criteria
 
+- **[Test Case Execution](docs/wiki/TestCaseExecution.md)** - Execution tracking including:
+  - Test case status tracking
+  - Execution progress metrics
+  - Status definitions and workflow
+  - Links to detailed test execution summary
+
 - **[Defect Reports](docs/wiki/DefectReports.md)** - Bug tracking system including:
   - ISO-29119-3 compliant defect template
   - 10 defined defect statuses and workflow
