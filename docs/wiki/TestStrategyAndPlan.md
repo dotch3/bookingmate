@@ -140,7 +140,7 @@ This document outlines the comprehensive test strategy and plan for the BookingM
 ### Phase 3 Preparation
 This test plan serves as the foundation for Phase 3 test execution activities, which will include:
 
-- **Manual Test Execution**: Execute all 20 test cases systematically
+- **Manual Test Execution**: Execute all 21 test cases systematically
 - **Exploratory Testing Sessions**: Conduct 5 chartered exploratory missions
 - **Bug Reporting**: Document and track any defects found
 - **Test Results Documentation**: Maintain comprehensive test execution records

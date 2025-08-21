@@ -18,8 +18,8 @@ Welcome to the BookingMate project documentation wiki. This wiki contains compre
 Source Documents are located in the [/docs/source-documents](../../docs/source-documents) folder.
 
 #### 🧪 Test Summary
-- **Test Coverage**: 5 user stories, 27 test conditions, 20 test cases
-- **Priority Distribution**: 15 High priority, 5 Medium priority test cases
+- **Test Coverage**: 5 user stories, 27 test conditions, 21 test cases
+- **Priority Distribution**: 13 High priority, 7 Medium priority, 1 Low priority test cases
 - **Testing Approach**: Web layer focus with comprehensive UI testing
 - **Standards**: ISO-29119-3 adapted template
 

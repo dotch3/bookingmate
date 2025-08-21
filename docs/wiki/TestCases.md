@@ -8,9 +8,10 @@ This document contains all test cases developed for the BookingMate application,
 
 ## Test Case Overview
 
-**Total Test Cases**: 20  
-**High Priority**: 12 cases  
-**Medium Priority**: 8 cases  
+**Total Test Cases**: 21  
+**High Priority**: 13 cases  
+**Medium Priority**: 7 cases  
+**Low Priority**: 1 case  
 **User Story Coverage**: 100% (5/5 user stories)
 
 ---
@@ -109,6 +110,198 @@ This document contains all test cases developed for the BookingMate application,
 - The first reservation is cancelled, and the Slot Cell view shows no reservation scheduled  
 
 ---
+
+## Test Case: TC5
+
+**Title:** Admin user reserves a slot successfully  
+**Priority:** High  
+**User Story:** JIRA-1001 Make reservations  
+**Preconditions:**  
+- Admin user’s credentials  
+- A Day with capacity for new reservations  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Search in the Calendar the day with capacity for new reservations and click on it | The Slot view belonging to the day selected should be opened |
+| 3 | Click on the “Click to reserve” link on the slot selected for the new reservation | The reservation should be created for the user logged in. A toast message should be displayed: “Reservation created successfully!” |
+
+**Postconditions:**  
+- The reservation should be in the database  
+- The Slot cell should have the list of reservations updated, listing the email of the user representing the new reservation created  
+- The counting of reservations on the Calendar view should be updated, increasing by +1  
+- The email of the user should be displayed on the Slot Cell on the Calendar view  
+
+## Test Case: TC6
+
+**Title:** Admin user cannot create a new reservation if the slot is full (2 reservations already created on the slot)  
+**Priority:** High  
+**User Story:** JIRA-1001 Make reservations  
+**Preconditions:**  
+- Admin user’s credentials  
+- A Day with 2 reservations already created on the morning slot  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Search on the Calendar the day with the 2 reservations already created on the morning slot and click on it | The Slot view should be opened |
+| 3 | Search for the slot morning and notice there is a message “Slot is full” and when mouseover the slot the “forbidden” icon is set as a mouse pointer | The reservation should be created for the user logged in. A toast message should be displayed: “Reservation created successfully!” |
+| 4 | Click on the morning slot | No reservation is created and the error toast message “This slot is full (maximum 2 reservations)” |
+
+**Postconditions:**  
+- Reservation is NOT created  
+
+## Test Case: TC7
+
+**Title:** Common user cancels its own reservation  
+**Priority:** High  
+**User Story:** JIRA-1002 - Cancel reservations  
+**Preconditions:**  
+- Common user’s credentials  
+- A Day with 1 reservation already created by the common user in the morning slot  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Search on the Calendar the day with the reservation already created on the morning slot and click on it | The Slot view should be opened displaying the reservation on the morning slot |
+| 3 | Click on the morning slot | The reservation should be cancelled for the user logged in. A success toast message should be displayed: “Reservation cancelled successfully!” |
+
+**Postconditions:**  
+- Reservation should be deleted from database  
+- The counting of reservations per day should be updated decreasing by -1  
+
+
+## Test Case: TC8
+
+**Title:** Admin user cancels its own reservation  
+**Priority:** High  
+**User Story:** JIRA-1002 - Cancel reservations  
+**Preconditions:**  
+- Admin user’s credentials  
+- A Day with 1 reservation already created by the admin user in the morning slot  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Search on the Calendar the day with the reservation already created on the morning slot and click on it | The Slot view should be opened displaying the reservation on the morning slot |
+| 3 | Click on the morning slot | The reservation should be cancelled for the user logged in. A success toast message should be displayed: “Reservation cancelled successfully!” |
+
+**Postconditions:**  
+- Reservation should be deleted from database  
+- The counting of reservations per day should be updated decreasing by -1  
+ 
+## Test Case: TC9
+
+**Title:** Admin user cancels another user’s reservation from calendar view
+**Priority:** High  
+**User Story:** JIRA-1002 - Cancel reservations  
+**Preconditions:**  
+- Admin user’s credentials  
+- A Day with 1 reservation already created by another user  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Search on the Calendar the day with the reservation already created by another user | The Slot view should be opened displaying the reservation |
+| 3 | Click on the “cancel reservation” for another user’s reservation | The reservation should be cancelled for another user. A success toast message should be displayed: “Reservation cancelled successfully!” |
+
+**Postconditions:**  
+- Reservation should be deleted from database  
+- The counting of reservations per day should be updated decreasing by -1  
+
+## Test Case: TC10
+
+**Title:** Common user gets the list of its reservations  
+**Priority:** Medium  
+**User Story:** JIRA-1003 – List my reservations  
+**Preconditions:**  
+- Common user’s credentials  
+- At least 1 reservation already created  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Click on “My Reservations” button located at the header | The /reservations page should be opened |
+| 3 | Review the “My Reservations” section and notice the reservations made by the user are listed | The reservations are listed for the user logged in |
+
+**Postconditions:**  
+- Reservation list should be displayed  
+
+
+## Test Case: TC11
+
+**Title:** Admin user gets the list of its reservations  
+**Priority:** Medium  
+**User Story:** JIRA-1003 – List my reservations  
+**Preconditions:**  
+- Admin user’s credentials  
+- At least 1 reservation already created  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Click on “My Reservations” button located at the header | The /reservations page should be opened |
+| 3 | Review the “My Reservations” section and notice the reservations made by the admin user are listed | The reservations are listed for the admin |
+
+**Postconditions:**  
+- Reservation list should be displayed  
+
+## Test Case: TC12
+
+**Title:** Common user without reservations gets a message of no reservations  
+**Priority:** Low  
+**User Story:** JIRA-1003 – List my reservations  
+**Preconditions:**  
+- Common user’s credentials  
+- No reservations for the user  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Click on “My Reservations” button located at the header | The /reservations page should be opened |
+| 3 | Review the “My Reservations” section and notice the message “No reservations found for this date” is displayed | The message of no reservations is visible |
+
+**Postconditions:**  
+- N/A  
+
+## Test Case: TC13
+
+**Title:** Admin user can create new user with role “user”  
+**Priority:** High  
+**User Story:** JIRA-1004 – Manage users  
+**Preconditions:**  
+- Admin user’s credentials  
+
+**Steps:**
+
+| Step | Action | Expected results |
+|------|--------|------------------|
+| 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
+| 2 | Click on “Admin Panel” button located at the header | The /admin page should be opened |
+| 3 | Notice the “User Management” section is displayed and contains the “Users Directory” table | N/A |
+| 4 | Click on “New user” button | The “Create new user” modal should be opened |
+| 5 | Fulfill the form with valid data <br>email: test@test.com  <br>password: 123456  <br>Display name: test user  <br>Select the role: “user” | N/A |
+| 6 | Click on “Create user” button | Success toast message is displayed “New user created!”  
+The user should be listed on the “User management” table with role “user” |
+
+**Postconditions:**  
+- Database for users should have a new record belonging to the user recently created  
 
 ## Test Case: TC14
 
@@ -209,7 +402,7 @@ This document contains all test cases developed for the BookingMate application,
 
 ---
 
-## Test Case: TC17
+## Test Case: TC18
 
 **Title:** Common user should not have access to the “Admin panel”  
 **Priority:** Medium  
@@ -224,10 +417,11 @@ This document contains all test cases developed for the BookingMate application,
 | 1 | Log into the BookMate app with the user credentials | Login succeeded and the Calendar view is displayed |
 | 2 | Notice that “Admin Panel” button is not available at the header | The /admin page should not be visible |
 | 3 | Edit the URL adding the “/admin” to the domain. Ex: http://mydomain/admin | The browser should redirect the user to the Home page |
-
+**Postconditions:**  
+- N/A 
 ---
 
-## Test Case: TC18
+## Test Case: TC19
 
 **Title:** Admin user can edit another user’s reservation  
 **Priority:** High  
@@ -251,7 +445,7 @@ This document contains all test cases developed for the BookingMate application,
 
 ---
 
-## Test Case: TC19
+## Test Case: TC20
 
 **Title:** Admin user can delete another user’s reservation  
 **Priority:** High  
@@ -276,7 +470,7 @@ This document contains all test cases developed for the BookingMate application,
 
 ---
 
-## Test Case: TC20
+## Test Case: TC21
 
 **Title:** Common user cannot delete another user’s reservation  
 **Priority:** Medium  
@@ -293,4 +487,6 @@ This document contains all test cases developed for the BookingMate application,
 | 2 | Notice that “Admin Panel “is not available at the header and click on it | The /admin page should not be visible |
 | 3 | Edit the URL adding the “/admin” to the domain. Ex: http://mydomain/admin | The browser should redirect the user to the Home page |
 
+**Postconditions:**  
+- N/A
 ---
