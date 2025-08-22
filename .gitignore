@@ -78,3 +78,8 @@ node_modules/
 # Build artifacts
 dist/
 functions/lib/
+
+# Microsoft Office temporary files
+~$*
+*.tmp
+*.temp

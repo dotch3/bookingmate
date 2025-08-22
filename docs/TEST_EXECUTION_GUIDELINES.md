@@ -5,7 +5,7 @@ This document provides detailed guidelines for executing test activities, includ
 
 ## Step-by-Step Execution Guide
 
-### Step 1: Pre-Execution Setup
+### Step 1: Pre-Execution Setup ⚙️
 
 **1.1 Environment Preparation**
 - Ensure the application is running locally (`npm run dev`)
@@ -18,7 +18,7 @@ This document provides detailed guidelines for executing test activities, includ
 - Create a table template for exploratory session reports, see [ExploratorySessionReportTemplate.md](./wiki/ExploratorySessionReportTemplate.md)
 - Create a table template for defect reports, see [DefectReportTemplate.md](./wiki/DefectReportTemplate.md)
 
-### Step 2: Manual Test Case Execution
+### Step 2: Manual Test Case Execution 🧪
 
 **2.1 Status Definitions**
 - **Passed**: Test executed successfully, expected results achieved
@@ -74,7 +74,7 @@ Execute exploratory testing using these charters:
 > (I) = Information  
 > (R) = Risk
 
-### Testing Charters
+### Testing Charters 🗺️
 
 | Charter | Description |
 |---------|-------------|
@@ -217,7 +217,7 @@ To find out, confirm, validate admin can successfully edit and delete any user's
 1. Should we have key events on the Create user, Edit user, Delete User, Edit reservation, and Delete reservation modals?
 
 ---
-### Step 4: Automation Testing
+### Step 4: Automation Testing 🤖 
 Identify the candidates for automation testing based on the test cases and exploratory sessions.
 - Test cases with high priority and repeated actions
 -Based on the resultant table of tes case execution,lets add a column: Candidate for Automation ? Yes/No answer

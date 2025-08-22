@@ -119,18 +119,20 @@ const createSeedUser = async (userData: SeedUser, currentAdminUser?: any): Promi
 /**
  * Seed all default users
  */
-export const seedDefaultUsers = async (): Promise<{ success: boolean; message: string }> => {
+export const seedDefaultUsers = async (force: boolean = false): Promise<{ success: boolean; message: string }> => {
   try {
     console.log('🌱 Starting user seeding process...');
     
-    // Check if users already exist
-    const isEmpty = await isUsersCollectionEmpty();
-    if (!isEmpty) {
-      console.log('Users collection is not empty. Skipping seed.');
-      return {
-        success: true,
-        message: 'Users collection already contains data. Seeding skipped.'
-      };
+    // Check if users already exist (unless forced)
+    if (!force) {
+      const isEmpty = await isUsersCollectionEmpty();
+      if (!isEmpty) {
+        console.log('Users collection is not empty. Skipping seed.');
+        return {
+          success: true,
+          message: 'Users collection already contains data. Seeding skipped.'
+        };
+      }
     }
     
     const currentUser = auth.currentUser;

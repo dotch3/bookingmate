@@ -5,6 +5,7 @@ import { db, auth } from '../firebase/firebase';
 import { useAuth } from '../auth/AuthProvider';
 import { toast } from 'react-toastify';
 import UserSeeder from '../components/UserSeeder';
+import DatabaseReset from '../components/DatabaseReset';
 
 interface User {
   id: string;
@@ -295,6 +296,9 @@ const AdminUserManagement: React.FC = () => {
           </div>
         </div>
 
+        {/* Database Reset Component */}
+        <DatabaseReset />
+        
         {/* User Seeder Component */}
         <UserSeeder />
       
