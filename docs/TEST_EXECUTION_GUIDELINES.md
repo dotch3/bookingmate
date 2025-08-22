@@ -14,37 +14,63 @@ This document provides detailed guidelines for executing test activities, includ
 - Set up screen recording tools for defect documentation
 
 **1.2 Document Templates Preparation**
-- Create Word document template for test execution results
-- Create Word document template for exploratory session reports
-- Create Word document template for defect reports
+- Create a table template for test execution results, see [TestExecutionTemplate.md](./wiki/TestExecutionTemplate.md)
+- Create a table template for exploratory session reports, see [ExploratorySessionReportTemplate.md](./wiki/ExploratorySessionReportTemplate.md)
+- Create a table template for defect reports, see [DefectReportTemplate.md](./wiki/DefectReportTemplate.md)
 
 ### Step 2: Manual Test Case Execution
 
-**2.1 Execute 21 Test Cases**
-- Reference: `docs/wiki/testCases.md` for complete test case details
+**2.1 Status Definitions**
+- **Passed**: Test executed successfully, expected results achieved
+- **Failed**: Test failed due to defect, defect report created
+- **Blocked**: Test cannot be executed due to dependency/environment issue
+
+---
+
+**2.2 Execute 21 Test Cases**
+- Reference: [TestCases.md](./wiki/TestCases.md) for complete test case details
 - Execute each test case systematically
-- Document results in Word table format:
+- Document results in a table format:
 
-| TC ID | Title | Status | Defect ID | Notes |
-|-------|-------|--------|-----------|-------|
-| TC01 | User Registration with Valid Data | Passed/Failed/Blocked | DEF-001 (if applicable) | Additional observations |
+| TC ID | Priority | Title                                                                                   | Status | Defect ID | Notes |
+|-------|----------|-----------------------------------------------------------------------------------------|--------|-----------|-------|
+| TC1   | High     | Common user reserves a slot successfully                                                | Failed | BUG001    | Reservation's day displayed in reservations list is incorrect |
+| TC2   | High     | Common user cannot create a new reservation if the slot is full (2 reservations already created on the slot) | Passed |           |       |
+| TC3   | High     | Common user cannot create a second reservation on the same slot for the same day        | Passed |           | The previous reservation is cancelled on the second click |
+| TC4   | High     | Common user can create reservations in all the slots on same day when slots have capacity | Passed | BUG002    | User can have 6 reservations if the day selected has capacity and 6 reservations in total per day (2 per slot) * 3 slots (morning, afternoon, evening). The mousepointer is showing the "Forbidden" icon when user wants to add a second reservation on a slot with another user's reservation. |
+| TC5   | High     | Admin user reserves a slot successfully                                                  | Failed | BUG001    |       |
+| TC6   | High     | Admin user cannot create a new reservation if the slot is full (2 reservations already created on the slot) | Passed |           |       |
+| TC7   | High     | Common user cancels its own reservation                                                  | Passed |           |       |
+| TC8   | High     | Admin user cancels its own reservation                                                   | Passed |           |       |
+| TC9   | High     | Admin user cancels another user's reservation from calendar view                         | Failed | BUG003    | Admin cannot cancel from the Calendar slot view, only from the reservation panel - not specified the scope for deletions for the admin - Question for P.O |
+| TC10  | Medium   | Common user gets the list of its reservations                                            | Failed | BUG004    | My reservations list other user's reservations too |
+| TC11  | Medium   | Admin user gets the list of its reservations                                             | Failed | BUG004    | My reservations list other user's reservations too. The admin probably should get the list of other user's reservations only on Admin panel/reservations table - Question for P.O |
+| TC12  | Low      | Common user without reservations gets a message of no reservations                       | Passed |           |       |
+| TC13  | High     | Admin user can create new user with role "user"                                          | Passed | BUG007    |       |
+| TC14  | High     | Admin user can create new user with role "admin"                                         | Passed | BUG007    |       |
+| TC15  | High     | Admin user can edit the role of another user                                             | Passed |           |       |
+| TC16  | High     | Admin user can edit the data of another user                                             | Passed |           |       |
+| TC17  | High     | Admin user deletes another user                                                          | Passed | BUG008    |       |
+| TC18  | Medium   | Common user should not have access to the Admin panel                                    | Passed |           | Common user has not access to the /admin page |
+| TC19  | High     | Admin user can edit another user's reservation                                           | Passed |           |       |
+| TC20  | High     | Admin user can delete another user's reservation                                         | Passed |           |       |
+| TC21  | Medium   | Common user cannot delete another user's reservation                                     | Passed |           | Common user has not access to the /admin page |
 
-**2.2 Test Execution Priority Order**
+---
+
+
+**2.3 Test Execution Priority Order**
 1. **High Priority (13 test cases)**: TC01-TC09, TC13-TC17, TC19-TC20
 2. **Medium Priority (7 test cases)**: TC10-TC11, TC18, TC21
 3. **Low Priority (1 test case)**: TC12
 
-**2.3 Status Definitions**
-- **Passed**: Test executed successfully, expected results achieved
-- **Failed**: Test failed due to defect, defect report created
-- **Blocked**: Test cannot be executed due to dependency/environment issue
 
 ### Step 3: Exploratory Testing with Charters
 
 **3.1 Exploratory Testing Sessions**
 Execute exploratory testing using these charters:
 
-> **Legend:**  
+> **Legend:** 
 > (I) = Information  
 > (R) = Risk
 
@@ -59,7 +85,7 @@ Execute exploratory testing using these charters:
 | **Charter 5: Manage reservations (admin)** | Explore editing and deleting reservations as an admin using heuristics "CRUD" and "Error Guessing." Verify successful updates, consistent deletion behavior, and correct feedback messages on the interface. |
 ---
 
-### Session Report
+### Exploratory Session Report
 
 | Start date and time | Tester | Module | Charter | Duration | Environment |
 |---------------------|--------|--------|---------|----------|-------------|
@@ -74,7 +100,7 @@ Execute exploratory testing using these charters:
 #### Missions
 **Charter 1: Create reservations (common user and admin)**
 
-**Mission 1:**
+**Mission:** 
     Explore reservation creation flow for common users and admins  
     With common user account with no existing reservations and admin account with various permission levels  
     To find out, confirm, validate it is possible to create reservations on morning, afternoon, and evening slots  
@@ -96,12 +122,12 @@ Execute exploratory testing using these charters:
 2. System throws an error message “Invalid time value” when selecting the “Clean” option from the date picker on the Slot view page – `BUG006` reported  
 
 **Questions**  
-- N/A
+- None
 
 ---
 
 **Charter 2: Manage users (admin)**
-**Mission 2:**
+**Mission:** 
   Explore user creation, edition, and deletion functionality for admin users
   With admin account with full permissions and test data including various user types
   To find out, confirm, validate admin can successfully manage users with CRUD operations and string validation
@@ -114,7 +140,6 @@ Execute exploratory testing using these charters:
 - (R) The email and displayName fields have no validations. They accept any size of characters and could be vulnerable to injection attacks.  
 - (R) Because of `BUG008`, the admin user has its role changed to “user”.  
 
-
 **Defects**  
 1. After deletion of a user, there is no toast message indicating if the deletion succeeded or failed – `BUG007` reported  
 2. Reservations are not deleted on cascade when the owner user is deleted – `BUG008` reported  
@@ -122,146 +147,119 @@ Execute exploratory testing using these charters:
 4. Logging in as admin causes the role to change to “user” and erases the `displayName` in the `/users` collection – `BUG010`  
 
 **Questions**  
-- N/A
-
+1. None
 
 ---
 
---- 
- @TODO:
 **Charter 3: Cancel reservations (common user and admin)**
-Mission 3:
-  Explore reservation cancellation functionality for both user types
-  With common user account with existing reservations and admin account with access to all reservations
-  To find out, confirm, validate cancellation works correctly for own and other users' reservations
-Duration: 10 minutes
-Notes: 
 
-Defects: 
+**Mission:**  
+Explore reservation cancellation functionality for both user types  
+With common user account with existing reservations and admin account with access to all reservations  
+To find out, confirm, validate cancellation works correctly for own and other users' reservations  
 
-Questions: 
+**Duration:** 10 minutes
 
+**Notes**  
+- (I) The Toast message is displayed when the reservation is deleted. Cool  
+- (I) The reservation is deleted from database `/reservations` collection  
+- (R) The admin cannot delete reservations from the Calendar Slot view. This is something to confirm with P.O  
+
+**Defects**
+1. None
+
+**Questions**
+1. Should the admin have the capability to delete reservations of other users from the Calendar Slot view page? A defect was reported for tracking `BUG003`
 
 ---
 
 **Charter 4: View reservations (common user and admin)**
-Mission 4:
-  Explore reservation viewing and navigation functionality
-  With common user account with some reservations and admin account with system-wide access
-  To find out, confirm, validate proper display and navigation of reservations based on user role
-Duration: 8 minutes
-Notes: 
 
-Defects: 
+**Mission:**  
+Explore reservation viewing and navigation functionality  
+With common user account with some reservations and admin account with system-wide access  
+To find out, confirm, validate proper display and navigation of reservations based on user role  
 
-Questions: 
+**Duration:** 8 minutes
+
+**Notes**  
+- (I) I’ve confirmed the user can see the reservations in the Calendar page and in the Slot page too, it shows the “email”  
+- (I) The reservations in the list of reservations have already bugs reported: `BUG004`, `BUG005`, `BUG006`  
+- (I) The Toast message is displayed when the reservation is deleted. Cool  
+
+**Defects**
+1. None
+
+**Questions**
+1. None
 
 ---
 
 **Charter 5: Manage reservations (admin)**
-Mission 5:
-  Explore reservation editing and deletion functionality for admin users
-  With admin account with full permissions and existing reservations from multiple users
-  To find out, confirm, validate admin can successfully edit and delete any user's reservations
-Duration: 10 minutes
-Notes: 
 
-Defects: 
+**Mission:**  
+Explore reservation editing and deletion functionality for admin users  
+With admin account with full permissions and existing reservations from multiple users  
+To find out, confirm, validate admin can successfully edit and delete any user's reservations  
 
-Questions: 
+**Duration:** 10 minutes
+
+**Notes**  
+- (I) I’ve confirmed the “Delete” action has a confirmation modal before deleting the reservation with the reservation data in the message. The modal can cancel or proceed  
+- (I) The admin can change/edit the slot time for the reservation from the admin panel  
+- (I) The date picker on Edit reservation has the same bug reported in `BUG005`  
+- (I) There is no key event for cancelling on the modal component. For example, pressing `ESC` should close the modal  
+
+**Defects**
+1. None
+
+**Questions**
+1. Should we have key events on the Create user, Edit user, Delete User, Edit reservation, and Delete reservation modals?
+
+---
+### Step 4: Automation Testing
+Identify the candidates for automation testing based on the test cases and exploratory sessions.
+- Test cases with high priority and repeated actions
+-Based on the resultant table of tes case execution,lets add a column: Candidate for Automation ? Yes/No answer
+ 
+ | TC ID | Priority | Title                                                                                   | Status | Defect ID | Notes | Candidate for automation? |
+|-------|----------|-----------------------------------------------------------------------------------------|--------|-----------|-------|----------------------------|
+| TC1   | High     | Common user reserves a slot successfully                                                | Failed | BUG001    | Reservation's day displayed in reservations list is incorrect | ✅ Yes |
+| TC2   | High     | Common user cannot create a new reservation if the slot is full                         | Passed |           |       | ✅ Yes |
+| TC3   | High     | Common user cannot create a second reservation on the same slot for the same day        | Passed |           | The previous reservation is cancelled on the second click | ✅ Yes |
+| TC4   | High     | Common user can create reservations in all slots on same day when slots have capacity   | Passed | BUG002    | Forbidden icon when user tries to add a second reservation on a slot with another user's reservation | ✅ Yes |
+| TC5   | High     | Admin user reserves a slot successfully                                                  | Failed | BUG001    |       | ✅ Yes |
+| TC6   | High     | Admin user cannot create a new reservation if the slot is full                          | Passed |           |       | ✅ Yes |
+| TC7   | High     | Common user cancels its own reservation                                                  | Passed |           |       | ✅ Yes |
+| TC8   | High     | Admin user cancels its own reservation                                                   | Passed |           |       | ✅ Yes |
+| TC9   | High     | Admin user cancels another user's reservation from calendar view                         | Failed | BUG003    | Admin cannot cancel from the calendar view | ✅ Yes |
+| TC10  | Medium   | Common user gets the list of its reservations                                            | Failed | BUG004    | Lists other users' reservations too | ✅ Yes |
+| TC11  | Medium   | Admin user gets the list of its reservations                                             | Failed | BUG004    | Same issue as TC10 | ✅ Yes |
+| TC12  | Low      | Common user without reservations gets message of no reservations                         | Passed |           |       | ❌ No |
+| TC13  | High     | Admin user can create new user with role "user"                                          | Passed | BUG007    |       | ✅ Yes |
+| TC14  | High     | Admin user can create new user with role "admin"                                         | Passed | BUG007    |       | ✅ Yes |
+| TC15  | High     | Admin user can edit the role of another user                                             | Passed |           |       | ✅ Yes |
+| TC16  | High     | Admin user can edit the data of another user                                             | Passed |           |       | ✅ Yes |
+| TC17  | High     | Admin user deletes another user                                                          | Passed | BUG008    |       | ✅ Yes |
+| TC18  | Medium   | Common user should not have access to the Admin panel                                    | Passed |           | Common user has not access to the /admin page | ❌ No |
+| TC19  | High     | Admin user can edit another user's reservation                                           | Passed |           |       | ✅ Yes |
+| TC20  | High     | Admin user can delete another user's reservation                                         | Passed |           |       | ✅ Yes |
+| TC21  | Medium   | Common user cannot delete another user's reservation                                     | Passed |           | Common user has not access to the /admin page | ❌ No |
+
 
 ---
 
+### Step 5: Final Documentation and Reporting
 
-### Step 4: Documentation Management
-
-**5.1 Word Documents Creation**
-- Create `Test_Execution_Results.docx`
-- Create `Exploratory_Testing_Sessions.docx`
-- Create `Defect_Reports.docx` (if defects found)
-
-**5.2 Move to Source Documents**
-- Place all Word documents in `docs/source-documents/phase-3/`
-- Organize by document type and date
-
-**5.3 Convert to Markdown**
-- Create corresponding `.md` files in `docs/wiki/`:
-  - `TestExecutionResults.md`
-  - `ExploratoryTestingSessions.md`
-  - `DefectReports.md`
-- Ensure proper formatting for wiki display
-- Include tables, links, and references
-
-### Step 6: Automation Planning
-
-**6.1 Test Case Analysis for Automation**
-Evaluate each test case against automation criteria:
-
-**Automation Suitability Criteria:**
-- Repetitive test cases
-- Stable functionality
-- Clear pass/fail criteria
-- No complex user judgment required
-- High business value
-- Regression testing candidates
-
-**6.2 Automation Candidate Classification**
-Create automation readiness matrix:
-
-| TC ID | Title | Automation Suitable | Priority | Complexity | Notes |
-|-------|-------|-------------------|----------|------------|-------|
-| TC01 | User Registration | Yes | High | Medium | Good candidate for form automation |
-| TC02 | User Login | Yes | High | Low | Simple form validation |
-
-**6.3 Automation Test Suite Planning**
-- **High Priority for Automation**: Login, Registration, Basic Reservation Flow
-- **Medium Priority**: Calendar Navigation, Admin Functions
-- **Low Priority**: Complex UI interactions, Visual validations
-
-**6.4 Cypress Test Structure Planning**
-Prepare test organization:
-```
-cypress/
-├── e2e/
-│   ├── auth/
-│   │   ├── login.cy.js
-│   │   └── registration.cy.js
-│   ├── reservations/
-│   │   ├── create-reservation.cy.js
-│   │   └── manage-reservation.cy.js
-│   └── admin/
-│       └── admin-panel.cy.js
-├── fixtures/
-└── support/
-```
-
-### Step 7: Final Documentation and Reporting
-
-**7.1 Test Summary Report**
-Create comprehensive summary including:
-- Total test cases executed
-- Pass/Fail/Blocked statistics
-- Defect summary and severity breakdown
-- Exploratory testing insights
-- Automation recommendations
-- Overall quality assessment
-
-**7.2 Completion Checklist**
-- [ ] All 21 test cases executed and documented
-- [ ] 5 exploratory testing sessions completed
-- [ ] All defects documented and reported
-- [ ] Word documents created and moved to source-documents
-- [ ] Markdown files created in wiki
-- [ ] Automation candidate list prepared
-- [ ] Test summary report completed
-- [ ] Documentation updated
-
-## Estimated Timeline
-- **Manual Test Execution**: 2-3 days
-- **Exploratory Testing**: 2 days
-- **Documentation**: 1 day
-- **Automation Planning**: 1 day
-- **Total**: 6-7 days
+**3.1 Completion Checklist**
+- [x] All 21 test cases executed and documented
+- [x] 5 exploratory testing sessions completed
+- [x] All defects documented and reported
+- [x] Word documents created and moved to source-documents
+- [x] Markdown files created in wiki
+- [x] Automation candidate list prepared
+- [x] Test summary report completed
+- [x] Documentation updated
 
 ## Success Criteria
 - 100% test case execution coverage
@@ -269,53 +267,3 @@ Create comprehensive summary including:
 - All defects properly documented
 - Clear automation roadmap established
 - Comprehensive documentation in both Word and Markdown formats
-
-## Templates and Resources
-
-### Test Execution Results Template
-```
-Test Execution Summary
-Date: [Date]
-Tester: [Name]
-Environment: [Browser/OS]
-
-| TC ID | Title | Status | Defect ID | Execution Time | Notes |
-|-------|-------|--------|-----------|----------------|-------|
-| TC01  |       |        |           |                |       |
-```
-
-### Defect Report Template
-```
-Defect Report
-
-Defect ID: DEF-XXX
-Title: [Brief description]
-Severity: [Critical/High/Medium/Low]
-Priority: [High/Medium/Low]
-Reported By: [Name]
-Date: [Date]
-
-Steps to Reproduce:
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-Expected Result:
-[What should happen]
-
-Actual Result:
-[What actually happened]
-
-Environment:
-- Browser: [Browser version]
-- OS: [Operating system]
-- Application Version: [Version]
-
-Attachments:
-- [Screenshots/Videos]
-
-Workaround:
-[If available]
-```
-
-This document serves as the comprehensive guide for systematic test execution and documentation.

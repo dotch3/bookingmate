@@ -26,9 +26,9 @@ Source Documents are located in the [/docs/source-documents](../../docs/source-d
 ## 🔄 Project Phases - Progress 🏁
 
 - **Phase 1**: Implementation Complete ✅ 
-- **Phase 2** (Current)📌: Test Planning and Strategy ✅
-- **Phase 3** (Next)📋: Test Execution and Bug Reporting ⏳
-- **Phase 4**: Test Automation Implementation ⏳
+- **Phase 2**: Test Planning and Strategy ✅
+- **Phase 3** (Current)📌: Test Execution and Bug Reporting ⏳
+- **Phase 4** (Next)📋: Test Automation Implementation ⏳
 - **Phase 5**: Bug Fixes and Regression Testing ⏳
 
 ---
