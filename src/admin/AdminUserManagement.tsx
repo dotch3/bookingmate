@@ -91,6 +91,13 @@ const AdminUserManagement: React.FC = () => {
         throw new Error('Admin user not authenticated');
       }
       
+      // Store admin credentials for re-authentication
+      const adminEmail = currentAdminUser.email;
+      
+      if (!adminEmail) {
+        throw new Error('Admin email not found');
+      }
+      
       // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -109,14 +116,10 @@ const AdminUserManagement: React.FC = () => {
         updatedAt: new Date(),
       });
       
-      // Sign out the newly created user and restore admin session
+      // Sign out the newly created user
       await auth.signOut();
       
-      // Re-authenticate the admin user using signInWithEmailAndPassword
-      // Note: In a production environment, you should use Firebase Admin SDK
-      // For now, we'll show a success message and let the user handle re-authentication if needed
-      
-      toast.success('User created successfully!');
+      toast.success('User created successfully! Please log in again.');
       
       // Reset form
       setNewUserEmail('');
@@ -125,8 +128,9 @@ const AdminUserManagement: React.FC = () => {
       setNewUserName('');
       setIsFormOpen(false);
       
-      // Refresh user list
-      fetchUsers();
+      // Redirect to login page since admin needs to re-authenticate
+      window.location.href = '/';
+      
     } catch (err: any) {
       console.error('Error creating user:', err);
       if (err.code === 'auth/email-already-in-use') {
@@ -272,6 +276,7 @@ const AdminUserManagement: React.FC = () => {
       }}
     >
       <div 
+        data-test="user-management-section"
         style={{
           width: '100%',
           maxWidth: '80rem',
@@ -326,7 +331,7 @@ const AdminUserManagement: React.FC = () => {
         <button 
           className="group inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white text-sm font-medium rounded-lg hover:from-green-500 hover:to-green-400 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
           onClick={() => setIsFormOpen(!isFormOpen)}
-          data-test="create-user-toggle-button"
+          data-test="new-user-button"
           style={{
             background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.8) 0%, rgba(22, 163, 74, 0.6) 100%)',
             boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
@@ -387,7 +392,7 @@ const AdminUserManagement: React.FC = () => {
               overflowY: 'auto'
             }}
           >
-          <div className="flex items-center space-x-3 mb-6">
+          <div className="flex items-center space-x-3 mb-6" data-test="create-user-modal">
             <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
               <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -398,7 +403,7 @@ const AdminUserManagement: React.FC = () => {
             </h3>
           </div>
           
-          <form onSubmit={handleCreateUser} className="space-y-6" data-test="create-user-form">
+          <form onSubmit={handleCreateUser} className="space-y-6" data-test="create-user-modal-form">
             <div className="group">
               <label className="block text-sm font-semibold text-white mb-3 flex items-center space-x-2" style={{ color: 'lightgray' }} htmlFor="email">
             
@@ -412,7 +417,7 @@ const AdminUserManagement: React.FC = () => {
                 required
                 placeholder="Enter user email"
                 className="w-full px-4 py-4 bg-white-800/50 border border-slate-600/50 rounded-xl text-white placeholder-white-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-300 group-hover:border-slate-500/70"
-                data-test="new-user-email-input"
+                data-test="user-email-input"
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -439,7 +444,7 @@ const AdminUserManagement: React.FC = () => {
                 minLength={6}
                 placeholder="Minimum 6 characters"
                 className="w-full px-4 py-4 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-white-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300 group-hover:border-slate-500/70"
-                data-test="new-user-password-input"
+                data-test="user-password-input"
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -465,7 +470,7 @@ const AdminUserManagement: React.FC = () => {
                 onChange={(e) => setNewUserName(e.target.value)}
                 placeholder="Enter display name"
                 className="w-full px-4 py-4 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-white-400 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-400/50 transition-all duration-300 group-hover:border-slate-500/70"
-                data-test="new-user-name-input"
+                data-test="user-display-name-input"
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -487,7 +492,7 @@ const AdminUserManagement: React.FC = () => {
                 value={newUserRole}
                 onChange={(e) => setNewUserRole(e.target.value)}
                 className="w-full px-4 py-4 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-400/50 transition-all duration-300 group-hover:border-slate-500/70 appearance-none cursor-pointer"
-                data-test="new-user-role-select"
+                data-test="user-role-select"
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -533,7 +538,7 @@ const AdminUserManagement: React.FC = () => {
                   opacity: loading ? 0.6 : 1,
                   cursor: loading ? 'not-allowed' : 'pointer'
                 }}
-                data-test="create-user-submit-button"
+                data-test="create-user-submit"
               >
                 {loading ? (
                   <div className="flex items-center">
@@ -578,7 +583,7 @@ const AdminUserManagement: React.FC = () => {
               borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
             }}
           >
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3" data-test="users-directory-banner">
               <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
@@ -594,7 +599,7 @@ const AdminUserManagement: React.FC = () => {
           </div>
           
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', minWidth: '100%' }} data-test="users-table">
+            <table style={{ width: '100%', minWidth: '100%' }} data-test="users-directory-table">
               <thead 
                 style={{
                   background: 'rgba(51, 65, 85, 0.4)',
@@ -768,7 +773,7 @@ const AdminUserManagement: React.FC = () => {
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         className="bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 border border-slate-500/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 transition-all duration-200 hover:from-slate-600 hover:to-slate-500"
-                        data-test={`user-role-select-${user.id}`}
+                        data-test="user-role-dropdown"
                         style={{
                           background: 'linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(71, 85, 105, 0.6) 100%)',
                           border: '1px solid rgba(100, 116, 139, 0.5)',
@@ -800,7 +805,7 @@ const AdminUserManagement: React.FC = () => {
                         <button 
                           className="group inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-medium rounded-lg hover:from-blue-500 hover:to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                           onClick={() => handleEditUser(user.id)}
-                          data-test={`edit-user-${user.id}`}
+                          data-test="edit-user-button"
                           style={{
                             background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.6) 100%)',
                             boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
@@ -815,7 +820,7 @@ const AdminUserManagement: React.FC = () => {
                         <button 
                           className="group inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white text-sm font-medium rounded-lg hover:from-red-500 hover:to-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                           onClick={() => handleDeleteUser(user.id)}
-                          data-test={`delete-user-${user.id}`}
+                          data-test="delete-user-button"
                           style={{
                             background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.8) 0%, rgba(239, 68, 68, 0.6) 100%)',
                             boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)'
@@ -858,6 +863,7 @@ const AdminUserManagement: React.FC = () => {
             overflowY: 'auto',
             zIndex: 1000
           }}
+          data-test="delete-user-modal"
         >
           <div 
             style={{
@@ -885,12 +891,12 @@ const AdminUserManagement: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-white" style={{color: 'lightgray'}}>Confirm Delete</h3>
+              <h3 className="text-xl font-bold text-white" style={{color: 'lightgray'}} data-test="delete-user-modal-title">Confirm Delete</h3>
             </div>
             
             <div className="mb-8">
-              <p className="text-slate-300 text-base leading-relaxed" style={{color: 'lightgray'}}>
-                Are you sure you want to delete user <span className="font-semibold text-white" style={{color: 'lightgray'}}>{userToDelete?.email}</span>? This action cannot be undone.
+              <p className="text-slate-300 text-base leading-relaxed" style={{color: 'lightgray'}} data-test="delete-user-warning">
+                Are you sure you want to delete user <span className="font-semibold text-white" style={{color: 'lightgray'}} data-test="delete-user-email">{userToDelete?.email}</span>? This action cannot be undone.
               </p>
             </div>
             
@@ -907,6 +913,7 @@ const AdminUserManagement: React.FC = () => {
                   boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                   backdropFilter: 'blur(8px)'
                 }}
+                data-test="delete-user-modal-cancel"
               >
                 Cancel
               </button>
@@ -919,6 +926,7 @@ const AdminUserManagement: React.FC = () => {
                   boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                   backdropFilter: 'blur(8px)'
                 }}
+                data-test="delete-user-modal-confirm"
               >
                 Delete User
               </button>
@@ -948,6 +956,7 @@ const AdminUserManagement: React.FC = () => {
              paddingRight: '1rem',
              overflowY: 'auto'
            }}
+           data-test="edit-user-modal"
          >
            <div 
              style={{
@@ -969,7 +978,7 @@ const AdminUserManagement: React.FC = () => {
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                  </svg>
                </div>
-               <h2 className="text-2xl font-bold text-white" style={{color: 'lightgray'}}>Edit User</h2>
+               <h2 className="text-2xl font-bold text-white" style={{color: 'lightgray'}} data-test="edit-user-modal-title">Edit User</h2>
              </div>
             
             <form onSubmit={handleUpdateUser} className="space-y-6">
@@ -991,6 +1000,7 @@ const AdminUserManagement: React.FC = () => {
                      color: 'white',
                      backdropFilter: 'blur(8px)'
                    }}
+                   data-test="edit-user-email-input"
                    required
                  />
                </div>
@@ -1013,6 +1023,7 @@ const AdminUserManagement: React.FC = () => {
                      color: 'white',
                      backdropFilter: 'blur(8px)'
                    }}
+                   data-test="edit-user-display-name-input"
                    placeholder="Optional"
                  />
                </div>
@@ -1034,6 +1045,7 @@ const AdminUserManagement: React.FC = () => {
                      color: 'white',
                      backdropFilter: 'blur(8px)'
                    }}
+                   data-test="edit-user-role-select"
                  >
                    <option value="user" style={{ backgroundColor: '#1e293b', color: 'white' }}>User</option>
                    <option value="admin" style={{ backgroundColor: '#1e293b', color: 'white' }}>Admin</option>
@@ -1057,6 +1069,7 @@ const AdminUserManagement: React.FC = () => {
                     boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                     backdropFilter: 'blur(8px)'
                   }}
+                  data-test="edit-user-modal-cancel"
                 >
                   Cancel
                 </button>
@@ -1072,6 +1085,7 @@ const AdminUserManagement: React.FC = () => {
                     opacity: loading ? 0.6 : 1,
                     cursor: loading ? 'not-allowed' : 'pointer'
                   }}
+                  data-test="update-user-submit"
                 >
                   {loading ? (
                     <div className="flex items-center">

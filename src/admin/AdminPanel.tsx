@@ -609,6 +609,7 @@ const AdminPanel: React.FC = () => {
                             overflowY: 'auto',
                             zIndex: 1000
                         }}
+                        data-test="delete-reservation-modal"
                     >
                         <div 
                             style={{
@@ -636,14 +637,14 @@ const AdminPanel: React.FC = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </div>
-                                <h3 className="text-xl font-bold text-white" style={{color: 'lightgray'}}>Delete Reservation</h3>
+                                <h3 className="text-xl font-bold text-white" style={{color: 'lightgray'}} data-test="delete-modal-title">Delete Reservation</h3>
                             </div>
                             
                             <div className="mb-8">
-                                <p className="text-slate-300 text-base leading-relaxed" style={{color: 'lightgray'}}>
+                                <p className="text-slate-300 text-base leading-relaxed" style={{color: 'lightgray'}} data-test="delete-reservation-warning">
                      Are you sure you want to delete the reservation for <span className="font-medium text-white" style={{color: 'lightgray'}}>Date:</span> <span className="font-semibold text-white" style={{color: 'lightgray'}}>{reservationToDelete.date}</span> ({reservationToDelete.slot})? This action cannot be undone.
                  </p>
-                                <div className="mt-4 p-4 bg-slate-800/30 rounded-lg border border-slate-600/30">
+                                <div className="mt-4 p-4 bg-slate-800/30 rounded-lg border border-slate-600/30" data-test="delete-reservation-details">
                                     <div className="text-sm text-slate-400">
                                         <div style={{color: 'lightgray'}}><span className="font-medium text-white">Date:</span> {reservationToDelete.date}</div>
                                         <div style={{color: 'lightgray'}}><span className="font-medium text-white">Time Slot:</span> {reservationToDelete.slot.charAt(0).toUpperCase() + reservationToDelete.slot.slice(1)}</div>
@@ -665,6 +666,7 @@ const AdminPanel: React.FC = () => {
                                         boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                                         backdropFilter: 'blur(8px)'
                                     }}
+                                    data-test="delete-modal-cancel"
                                 >
                                     Cancel
                                 </button>
@@ -677,6 +679,7 @@ const AdminPanel: React.FC = () => {
                                         boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                                         backdropFilter: 'blur(8px)'
                                     }}
+                                    data-test="delete-modal-confirm"
                                 >
                                     Delete Reservation
                                 </button>

@@ -22,15 +22,32 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   async function ensureUserDoc(uid: string, data: Partial<{ email: string | null; displayName: string | null }>) {
     const ref = doc(db, 'users', uid);
     const snap = await getDoc(ref);
-    const base = {
-      role: 'user' as const,
-      isActive: true,
-      updatedAt: serverTimestamp(),
-    };
+    
     if (!snap.exists()) {
+      // New user - set defaults
+      const base = {
+        role: 'user' as const,
+        isActive: true,
+        updatedAt: serverTimestamp(),
+      };
       await setDoc(ref, { uid, ...data, ...base, createdAt: serverTimestamp() }, { merge: true });
     } else {
-      await setDoc(ref, { ...data, ...base }, { merge: true });
+      // Existing user - preserve role and displayName, only update what's necessary
+      const existingData = snap.data();
+      const updateData: any = {
+        isActive: true,
+        updatedAt: serverTimestamp(),
+      };
+      
+      // Only update email if it's different
+      if (data.email && data.email !== existingData.email) {
+        updateData.email = data.email;
+      }
+      
+      // Preserve existing displayName and role
+      // Don't overwrite with null/empty values from Firebase Auth
+      
+      await setDoc(ref, updateData, { merge: true });
     }
   }
 
