@@ -1,6 +1,6 @@
 # BookingMate - Phase 4: Test Automation
 
-**Status**: ⏳ Phase 4 In Progress - Test Automation Implementation
+**Status**: ⏳ Phase 4 Completed - Test Automation Implementation
 ---
 
 ## 📋 Phase 4 Overview
@@ -120,6 +120,9 @@ Phase 4 is currently in progress, focusing on **automated test implementation** 
 - **Custom Commands**: 8 reusable commands implemented
 - **Test Data**: Environment-driven test data management
 - **Execution**: Ready for CI/CD integration
+
+#### Non-Functional Testing Status
+**⏸️ ON HOLD**: Testing for accessibility, performance, security, and other non-functional requirements is currently on hold until the system reaches a more stable condition. These testing activities will be prioritized in future phases once core functionality bugs are resolved and the system demonstrates consistent reliability.
 
 ### Phase 5: Fixes & Regression (`phase-5-fixes-regression`) ⏳
 **Objective**: Address bugs and ensure system stability
